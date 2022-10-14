@@ -1,1 +1,4 @@
-
+@echo on
+cd "%USERPROFILE%\Desktop"
+powershell -Command "$ProgressPreference = 'SilentlyContinue'; $tempLoc = ""$env:USERPROFILE\Desktop\temp-mitelconnect""; function Get-TimeStamp {return ""[{0:yyyy/MM/dd} {0:HH:mm:ss}]"" -f (Get-Date)}; Write-Output ""$(Get-TimeStamp) - Init""; mkdir $tempLoc -ErrorAction SilentlyContinue; Set-Location $tempLoc; Invoke-WebRequest ""https://upgrade.connect.mitelcloud.com/ClientInstall/213.100.5664.0/non-admin/MitelConnectGPO.zip"" -OutFile MitelConnectGPO.zip -Verbose; Write-Output ""$(Get-TimeStamp) - Download complete""; $hash = (Get-FileHash MitelConnectGPO.zip).Hash; Write-Output ""Hash: $hash""; Expand-Archive MitelConnectGPO.zip -Force -Verbose; Set-Location $tempLoc\MitelConnectGPO; Get-ChildItem; & msiexec /i ""Mitel Connect.msi"" /passive /norestart | Out-Null; Write-Output ""$(Get-TimeStamp) - Installation complete""; $isInstalledAfter = Test-Path ""$env:LOCALAPPDATA\Programs\Mitel\Connect\Mitel.exe""; Write-Output ""$(Get-TimeStamp) - Found $isInstalledAfter! Cleaining up...""; Set-Location $env:LOCALAPPDATA; Remove-Item -Path $tempLoc -Recurse -Force -Verbose; if ($isInstalledAfter) {Exit 0}; Exit 1"
+pause
